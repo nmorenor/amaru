@@ -234,7 +234,7 @@ func (s *HudUi) Update() {
 
 		game := component.MustFindGame(*s.World)
 		if game != nil {
-			if s.Game.Session.Type == component.SessionTypeHost && s.Game.Session.RemoteClient.GameData.Counter <= 0 || game.WasteSize == game.CollectedWaste {
+			if s.Game.Session.Type == component.SessionTypeHost && s.Game.Session.RemoteClient.GameData.Counter <= 0 {
 				game.GameOver = true
 			}
 			s.ui.Container.GetWidget().LayoutData = widget.RowLayoutData{
