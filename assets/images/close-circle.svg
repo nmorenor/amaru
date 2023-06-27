@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+
+<svg
+   width="32px"
+   height="32px"
+   viewBox="0 0 24 24"
+   fill="none"
+   version="1.1"
+   id="svg286"
+   sodipodi:docname="close-circle.svg"
+   inkscape:version="1.2.2 (b0a84865, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview288"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="2.6479325"
+     inkscape:cx="321.94929"
+     inkscape:cy="351.40623"
+     inkscape:window-width="1385"
+     inkscape:window-height="579"
+     inkscape:window-x="57"
+     inkscape:window-y="251"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="g279" />
+  <g
+     clip-path="url(#clip0_429_11081)"
+     id="g279">
+    <circle
+       cx="12"
+       cy="11.9999"
+       r="9"
+       stroke="#B7312C"
+       stroke-width="2.5"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       id="circle273" />
+    <path
+       d="M14 10.0001L10 14.0001"
+       stroke="#B7312C"
+       stroke-width="2.5"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       id="path275" />
+    <path
+       d="M10 10.0001L14 14.0001"
+       stroke="#B7312C"
+       stroke-width="2.5"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       id="path277" />
+  </g>
+  <defs
+     id="defs284">
+    <clipPath
+       id="clip0_429_11081">
+      <rect
+         width="24"
+         height="24"
+         fill="#B7312C"
+         id="rect281" />
+    </clipPath>
+  </defs>
+</svg>

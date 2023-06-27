@@ -1,0 +1,19 @@
+{
+    "collabs" : [
+        {
+            "name" : "Mauricio Urbina",
+            "url" : "https://twitter.com/macarioug",
+            "description": "Audio Producer:"
+        },
+        {
+            "name" : "Luis Moreno",
+            "url" : "https://github.com/chicharitomagnetico",
+            "description": "Graphics Designer:"
+        },
+        {
+            "name" : "Ignacio Moreno",
+            "url" : "http://github.com/nmorenor",
+            "description": "Programmer:"
+        }
+    ]
+}
