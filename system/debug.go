@@ -15,6 +15,7 @@ import (
 	"github.com/jakecoffman/cp"
 
 	"amaru/archetype"
+	"amaru/assets"
 	"amaru/component"
 )
 
@@ -25,21 +26,15 @@ type Debug struct {
 	offscreen      *ebiten.Image
 	offscreenBoxes *ebiten.Image
 	game           *component.GameData
-
-	Shapes []*cp.Shape
-
-	restartLevelCallback func()
 }
 
-func NewDebug(restartLevelCallback func()) *Debug {
+func NewDebug(levelIndex int) *Debug {
 	return &Debug{
 		query: query.NewQuery(
 			filter.Contains(transform.Transform, component.Sprite),
 		),
-		// TODO figure out the proper size
-		offscreen:            ebiten.NewImage(3000, 3000),
-		offscreenBoxes:       ebiten.NewImage(3000, 3000),
-		restartLevelCallback: restartLevelCallback,
+		offscreen:      ebiten.NewImage(assets.AvailableLevels[levelIndex].Background.Bounds().Dx(), assets.AvailableLevels[levelIndex].Background.Bounds().Dy()),
+		offscreenBoxes: ebiten.NewImage(assets.AvailableLevels[levelIndex].Background.Bounds().Dx(), assets.AvailableLevels[levelIndex].Background.Bounds().Dy()),
 	}
 }
 

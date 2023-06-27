@@ -97,7 +97,7 @@ func (g *Game) NextScene() archetype.Scene {
 
 func (g *Game) loadLevel() {
 	render := system.NewRenderer(g.sessionData.RemoteClient.GameData.LevelIndex)
-	debug := system.NewDebug(g.loadLevel)
+	debug := system.NewDebug(g.sessionData.RemoteClient.GameData.LevelIndex)
 	remote := system.NewRemoteSystem()
 	hud := system.NewHUD()
 
@@ -193,8 +193,8 @@ func (g *Game) createWorld(levelIndex int) donburi.World {
 	debugComponent := component.Debug.Get(world.Entry(debugEntity))
 	debugComponent.Shapes = g.shapes
 
-	pPos := engine.RandomIntRange(0, len(assets.PlayerStart)-1)
-	startPos := assets.PlayerStart[pPos].TetraCenter()
+	pPos := engine.RandomIntRange(0, len(levelAsset.PlayersStart))
+	startPos := levelAsset.PlayersStart[pPos].TetraCenter()
 	archetype.NewPlayer(world, g.space, startPos, component.DefaultPlayerAnimation, *game.Session.UserName, *game.Session.RemoteClient.Client.Id, true)
 	if game.Session.RemoteClient.GameData.SessionParticipants[*game.Session.RemoteClient.Client.Id] == nil {
 		game.Session.RemoteClient.GameData.SessionParticipants[*game.Session.RemoteClient.Client.Id] = &net.SessionParticipant{

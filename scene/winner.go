@@ -65,9 +65,9 @@ func NewWinnerMenu(gameData *component.GameData) *WinnerMenu {
 
 func (menu *WinnerMenu) loadMenu(gameData *component.GameData) {
 	lastIndex := gameData.Session.RemoteClient.GameData.LevelIndex
-	selectedLevelIndex := engine.RandomIntRange(0, len(assets.AvailableLevels)-1)
+	selectedLevelIndex := engine.RandomIntRange(0, len(assets.AvailableLevels))
 	for selectedLevelIndex == lastIndex {
-		selectedLevelIndex = engine.RandomIntRange(0, len(assets.AvailableLevels)-1)
+		selectedLevelIndex = engine.RandomIntRange(0, len(assets.AvailableLevels))
 	}
 	gameData.Session.RemoteClient.GameData.LevelIndex = selectedLevelIndex
 	render := system.NewRenderer(gameData.Session.RemoteClient.GameData.LevelIndex)

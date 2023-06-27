@@ -68,9 +68,8 @@ var (
 	DirectionalPad  *ebiten.Image
 	DirectionalBtn  *ebiten.Image
 
-	PlayerStart []Path
-	BlueColor   color.Color
-	GreenColor  color.Color
+	BlueColor  color.Color
+	GreenColor color.Color
 
 	BlueColorHex  = "#27bdf5cc"
 	GreenColorHex = "#43ff64d9"
@@ -95,10 +94,11 @@ type AudioStream interface {
 }
 
 type Level struct {
-	OverPlayer *ebiten.Image
-	Background *ebiten.Image
-	Paths      map[uint32]Path
-	Animals    []Path
+	OverPlayer   *ebiten.Image
+	Background   *ebiten.Image
+	Paths        map[uint32]Path
+	Animals      []Path
+	PlayersStart []Path
 }
 
 type Path struct {
@@ -125,7 +125,6 @@ func (p *Path) TetraCenter() math.Vec2 {
 }
 
 func MustLoadAssets() {
-	PlayerStart = []Path{}
 	loader := newLevelLoader()
 	AvailableLevels = loader.MustLoadLevels()
 	BlueColor, _ = colorful.Hex(BlueColorHex)
@@ -220,12 +219,13 @@ func (l *levelLoader) MustLoadLevel(levelPath string) Level {
 
 	paths := map[uint32]Path{}
 	animals := []Path{}
+	playerStarts := []Path{}
 	for _, og := range levelMap.ObjectGroups {
 		for _, o := range og.Objects {
 			if o.Width != 0 && o.Height != 0 && len(o.PolyLines) == 0 && len(o.Polygons) == 0 {
 				box := l.MustLoadBox(o)
 				if o.Class == "playerStart" {
-					PlayerStart = append(PlayerStart, box)
+					playerStarts = append(playerStarts, box)
 				} else if o.Class == "animal" {
 					animals = append(animals, box)
 				} else {
@@ -293,6 +293,7 @@ func (l *levelLoader) MustLoadLevel(levelPath string) Level {
 	nextLevel.OverPlayer = ebiten.NewImageFromImage(overPlayerRenderer.Result)
 	nextLevel.Paths = paths
 	nextLevel.Animals = animals
+	nextLevel.PlayersStart = playerStarts
 
 	for _, ts := range levelMap.Tilesets {
 		if _, ok := l.Tilesets[ts.Class]; !ok {

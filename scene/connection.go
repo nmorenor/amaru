@@ -58,7 +58,7 @@ func NewConnectingMenuMenu(screenWidth int, screenHeight int, session *component
 }
 
 func (menu *ConnectingMenu) loadMenu(session *component.SessionData) {
-	selectedLevelIndex := engine.RandomIntRange(0, len(assets.AvailableLevels)-1)
+	selectedLevelIndex := engine.RandomIntRange(0, len(assets.AvailableLevels))
 	menu.levelIndex = selectedLevelIndex
 	render := system.NewRenderer(selectedLevelIndex)
 
