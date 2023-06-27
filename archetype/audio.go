@@ -85,3 +85,8 @@ func PlayCollectedAudio() {
 		assets.CollectedAudioPlayer.Play()
 	}
 }
+
+func PlayButtonClickAudio() {
+	assets.ButtonClickPlayer.Rewind()
+	assets.ButtonClickPlayer.Play()
+}

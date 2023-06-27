@@ -86,6 +86,7 @@ var (
 	HeronAudioPlayer     *audio.Player
 	ShipAudioPlayer      *audio.Player
 	CollectedAudioPlayer *audio.Player
+	ButtonClickPlayer    *audio.Player
 )
 
 type AudioStream interface {
@@ -149,6 +150,7 @@ func MustLoadAssets() {
 	HeronAudioPlayer = mustLoadAudioPlayer("audio/heron.ogg", audioContext)
 	ShipAudioPlayer = mustLoadAudioPlayer("audio/ship.ogg", audioContext)
 	CollectedAudioPlayer = mustLoadAudioPlayer("audio/collected.ogg", audioContext)
+	ButtonClickPlayer = mustLoadAudioPlayer("audio/button-click.ogg", audioContext)
 }
 
 func mustLoadNorthSpriteSheet(image string, width int, height int) *engine.Spritesheet {

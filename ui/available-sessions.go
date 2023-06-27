@@ -175,6 +175,7 @@ func NewAvailableSessionsMenu(gameData *component.GameData) *AvailableSessionsMe
 		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 			availableSessionsMenu.Cancelled = true
 			availableSessionsMenu.Done = false
+			archetype.PlayButtonClickAudio()
 		}),
 	)
 	buttonsContainer.AddChild(availableSessionsMenu.cancelButton)
@@ -202,6 +203,7 @@ func NewAvailableSessionsMenu(gameData *component.GameData) *AvailableSessionsMe
 		),
 		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 			availableSessionsMenu.refreshSessions()
+			archetype.PlayButtonClickAudio()
 		}),
 	)
 	buttonsContainer.AddChild(availableSessionsMenu.refreshButton)
@@ -230,6 +232,7 @@ func NewAvailableSessionsMenu(gameData *component.GameData) *AvailableSessionsMe
 		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 			availableSessionsMenu.Done = true
 			availableSessionsMenu.Cancelled = true
+			archetype.PlayButtonClickAudio()
 		}),
 	)
 	buttonsContainer.AddChild(availableSessionsMenu.joinButton)

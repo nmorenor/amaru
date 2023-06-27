@@ -149,6 +149,7 @@ func NewTextInputMenu(title string, label string, cancelLabel string, placeHolde
 		),
 		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 			if textInputMenu.canSubmit && len(textInputMenu.inputText.GetText()) > 0 {
+				archetype.PlayButtonClickAudio()
 				textInputMenu.Done = true
 			}
 		}),
@@ -177,6 +178,7 @@ func NewTextInputMenu(title string, label string, cancelLabel string, placeHolde
 		),
 		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 			textInputMenu.Cancel = true
+			archetype.PlayButtonClickAudio()
 		}),
 	)
 

@@ -120,6 +120,7 @@ func NewAboutMenuUI() *AboutMenuUI {
 				widget.WidgetOpts.CursorPressed("buttonPressed"),
 			),
 			widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+				archetype.PlayButtonClickAudio()
 				browser.OpenURL(collab.Url)
 			}),
 			widget.ButtonOpts.CursorEnteredHandler(func(args *widget.ButtonHoverEventArgs) {
@@ -167,6 +168,7 @@ func NewAboutMenuUI() *AboutMenuUI {
 		),
 		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 			aboutMenu.Back = true
+			archetype.PlayButtonClickAudio()
 		}),
 	)
 	backContainer.AddChild(aboutMenu.backButton)

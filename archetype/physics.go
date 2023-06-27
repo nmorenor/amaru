@@ -99,7 +99,9 @@ func SetupColliders(world donburi.World) {
 		game.CollectedWaste += 1
 
 		if player.Local {
-			PlayCollectedAudio()
+			if !game.Muted {
+				PlayCollectedAudio()
+			}
 		}
 
 		return false
@@ -130,7 +132,9 @@ func SetupColliders(world donburi.World) {
 		game.Session.RemoteClient.GameData.SessionParticipants[player.ID].Score += component.AnimalPoints
 
 		if player.Local {
-			PlayHeronAudio()
+			if !game.Muted {
+				PlayHeronAudio()
+			}
 		}
 
 		return false
@@ -174,7 +178,9 @@ func SetupColliders(world donburi.World) {
 			otherPlayer.PlayerCollision = true
 		}
 		if onePlayer.Local {
-			PlayShipAudio()
+			if !game.Muted {
+				PlayShipAudio()
+			}
 		}
 
 		return true

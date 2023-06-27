@@ -96,6 +96,7 @@ func NewStartMenu() *StartMenu {
 		),
 		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 			startMenu.SelectedOption = Host
+			archetype.PlayButtonClickAudio()
 		}),
 	)
 	buttonsContainer.AddChild(startMenu.hostButton)
@@ -122,6 +123,7 @@ func NewStartMenu() *StartMenu {
 			widget.WidgetOpts.CursorPressed("buttonPressed"),
 		),
 		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+			archetype.PlayButtonClickAudio()
 			startMenu.SelectedOption = Join
 		}),
 	)
@@ -155,6 +157,7 @@ func NewStartMenu() *StartMenu {
 			widget.WidgetOpts.CursorPressed("buttonPressed"),
 		),
 		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+			archetype.PlayButtonClickAudio()
 			startMenu.SelectedOption = About
 		}),
 	)

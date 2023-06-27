@@ -173,6 +173,7 @@ func NewWinnerUI(winner string, gameData *component.GameData) *WinnerUI {
 	sendButtonContainer, sendButton := archetype.CreateSVGImageButton(assets.SendKey, "Send", sendButtonInsets, func() {
 		if winnerUI.MessageValue != nil && len(*winnerUI.MessageValue) > 0 {
 			winnerUI.MessageDone = true
+			archetype.PlayButtonClickAudio()
 		}
 	})
 	sendButtonContainer.GetWidget().LayoutData = widget.RowLayoutData{
