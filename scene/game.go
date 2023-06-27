@@ -186,7 +186,7 @@ func (g *Game) createWorld(levelIndex int) donburi.World {
 	game := component.MustFindGame(world)
 	if engine.IsMobileBrowser() {
 		game.Dpad = engine.Ptr(vpad.NewDirectionalPad(assets.DirectionalPad, assets.DirectionalBtn, engine.ConvertToRGBA(assets.BlueColor)))
-		game.Dpad.SetLocation(game.Settings.ScreenWidth-130, game.Settings.ScreenHeight-130)
+		game.Dpad.SetLocation(game.Settings.ScreenWidth-230, game.Settings.ScreenHeight-230)
 	}
 
 	debugEntity := world.Create(component.Debug)
