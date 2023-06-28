@@ -104,7 +104,7 @@ func placeWasteFromPath(world donburi.World, space *cp.Space, debug *component.D
 		spriteData.Layer = component.SpriteLayerDefault
 		spriteData.Pivot = component.SpritePivotTopLeft
 
-		animationEntry := NewAnimationComponent(world, waste, waste, assets.WasteSpriteSheet.Drawables(), 0.3)
+		animationEntry := NewAnimationComponent(world, waste, waste, assets.WasteSpriteSheet.Drawables(), 0.4)
 		animationData := component.AnimationComponent.Get(animationEntry)
 		animationData.AddAnimations(WasteActions)
 		animationData.SelectAnimationByName("default")

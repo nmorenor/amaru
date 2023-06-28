@@ -61,12 +61,12 @@ var (
 	MainSmallFont font.Face
 	MainBigFont   font.Face
 
-	BoatSpriteSheet  *engine.Spritesheet
-	WasteSpriteSheet *engine.Spritesheet
-	TurtleImage      *ebiten.Image
-	SealImage        *ebiten.Image
-	DirectionalPad   *ebiten.Image
-	DirectionalBtn   *ebiten.Image
+	BoatSpriteSheet   *engine.Spritesheet
+	WasteSpriteSheet  *engine.Spritesheet
+	TurtleSpriteSheet *engine.Spritesheet
+	SealSpriteSheet   *engine.Spritesheet
+	DirectionalPad    *ebiten.Image
+	DirectionalBtn    *ebiten.Image
 
 	BlueColor  color.Color
 	GreenColor color.Color
@@ -142,8 +142,8 @@ func MustLoadAssets() {
 
 	BoatSpriteSheet = mustLoadNorthSpriteSheet("images/boat.png", 32, 32)
 	WasteSpriteSheet = mustLoadNorthSpriteSheet("images/waste-sheet.png", 32, 32)
-	SealImage = MustLoadImageFromFS("images/foca.png")
-	TurtleImage = MustLoadImageFromFS("images/turtle.png")
+	TurtleSpriteSheet = mustLoadNorthSpriteSheet("images/turtle-sheet.png", 32, 32)
+	SealSpriteSheet = mustLoadNorthSpriteSheet("images/foca-sheet.png", 32, 32)
 	DirectionalPad = MustLoadImageFromFS("images/directional_pad.png")
 	DirectionalBtn = MustLoadImageFromFS("images/directional_button.png")
 

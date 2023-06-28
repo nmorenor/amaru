@@ -10,6 +10,15 @@ import (
 	"github.com/yohamta/donburi/features/transform"
 )
 
+var (
+	AnimalAnimationAction = &component.Animation{
+		Name:   "default",
+		Frames: []int{0, 1, 2, 3, 4, 5},
+	}
+
+	AnimalActions = []*component.Animation{AnimalAnimationAction}
+)
+
 func PlaceAnimalComponents(world donburi.World, space *cp.Space, debug *component.DebugData, animalPaths []assets.Path, mapWidth float64, mapHeight float64) {
 	for index, animalPath := range animalPaths {
 		animalShape := CreateBoxFromPath(space, animalPath, component.AnimalCollisionType)
@@ -27,6 +36,7 @@ func PlaceAnimalComponents(world donburi.World, space *cp.Space, debug *componen
 			world.Create(
 				component.Sprite,
 				transform.Transform,
+				component.AnimationComponent,
 				component.Animal,
 			),
 		)
@@ -38,9 +48,21 @@ func PlaceAnimalComponents(world donburi.World, space *cp.Space, debug *componen
 		spriteData.Layer = component.SpriteLayerDefault
 		spriteData.Pivot = component.SpritePivotTopLeft
 		if index == 0 || index%2 == 0 {
-			spriteData.Image = assets.TurtleImage
+			animationEntry := NewAnimationComponent(world, animal, animal, assets.TurtleSpriteSheet.Drawables(), 0.4)
+			animationData := component.AnimationComponent.Get(animationEntry)
+			animationData.AddAnimations(WasteActions)
+			animationData.SelectAnimationByName("default")
+			animationData.CurrentAnimation.Loop = true
+
+			spriteData.Image = animationData.Cell()
 		} else {
-			spriteData.Image = assets.SealImage
+			animationEntry := NewAnimationComponent(world, animal, animal, assets.SealSpriteSheet.Drawables(), 0.4)
+			animationData := component.AnimationComponent.Get(animationEntry)
+			animationData.AddAnimations(WasteActions)
+			animationData.SelectAnimationByName("default")
+			animationData.CurrentAnimation.Loop = true
+
+			spriteData.Image = animationData.Cell()
 		}
 		component.Sprite.SetValue(animal, spriteData)
 		transform.Transform.Get(animal).LocalPosition = math.Vec2{X: vert.X - 32, Y: vert.Y + 32}
