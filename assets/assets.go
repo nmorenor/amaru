@@ -9,7 +9,6 @@ import (
 	_ "image/png"
 	"io"
 	"io/fs"
-	"path/filepath"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/audio"
@@ -50,7 +49,8 @@ var (
 
 	audioContext *audio.Context
 
-	AvailableLevels []Level
+	// AvailableLevels []Level
+	GameLevelLoader *LevelLoader
 
 	MessagesFont      font.Face
 	MessagesSmallFont font.Face
@@ -124,9 +124,14 @@ func (p *Path) TetraCenter() math.Vec2 {
 	return math.Vec2{X: centerX, Y: centerY}
 }
 
+type LevelLoader struct {
+	LevelsSize        int
+	CurrentLevel      *Level
+	CurrentLevelIndex int
+}
+
 func MustLoadAssets() {
-	loader := newLevelLoader()
-	AvailableLevels = loader.MustLoadLevels()
+	GameLevelLoader = newLevelLoader()
 	BlueColor, _ = colorful.Hex(BlueColorHex)
 	GreenColor, _ = colorful.Hex(GreenColorHex)
 
@@ -150,6 +155,16 @@ func MustLoadAssets() {
 	ShipAudioPlayer = mustLoadAudioPlayer("audio/ship.ogg", audioContext)
 	CollectedAudioPlayer = mustLoadAudioPlayer("audio/collected.ogg", audioContext)
 	ButtonClickPlayer = mustLoadAudioPlayer("audio/button-click.ogg", audioContext)
+}
+
+func newLevelLoader() *LevelLoader {
+	levelPaths, err := fs.Glob(assetsFS, "levels/level*.tmx")
+	if err != nil {
+		panic(err)
+	}
+	return &LevelLoader{
+		LevelsSize: len(levelPaths),
+	}
 }
 
 func mustLoadNorthSpriteSheet(image string, width int, height int) *engine.Spritesheet {
@@ -185,31 +200,23 @@ func mustNewEbitenImage(data []byte) *ebiten.Image {
 	return ebiten.NewImageFromImage(img)
 }
 
-type levelLoader struct {
-	Tilesets map[string]*tiled.Tileset
-}
-
-func newLevelLoader() *levelLoader {
-	return &levelLoader{
-		Tilesets: make(map[string]*tiled.Tileset),
+func (l *LevelLoader) LoadLevel(index int) *Level {
+	if index == l.CurrentLevelIndex && l.CurrentLevel != nil {
+		return l.CurrentLevel
 	}
-}
-
-func (l *levelLoader) MustLoadLevels() []Level {
 	levelPaths, err := fs.Glob(assetsFS, "levels/level*.tmx")
 	if err != nil {
 		panic(err)
 	}
+	targetPath := levelPaths[index]
 
-	var levels []Level
-	for _, path := range levelPaths {
-		levels = append(levels, l.MustLoadLevel(path))
-	}
+	l.CurrentLevelIndex = index
+	l.CurrentLevel = engine.Ptr(l.MustLoadLevel(targetPath))
 
-	return levels
+	return l.CurrentLevel
 }
 
-func (l *levelLoader) MustLoadLevel(levelPath string) Level {
+func (l *LevelLoader) MustLoadLevel(levelPath string) Level {
 	levelMap, err := tiled.LoadFile(levelPath, tiled.WithFileSystem(assetsFS))
 	if err != nil {
 		panic(err)
@@ -295,16 +302,10 @@ func (l *levelLoader) MustLoadLevel(levelPath string) Level {
 	nextLevel.Animals = animals
 	nextLevel.PlayersStart = playerStarts
 
-	for _, ts := range levelMap.Tilesets {
-		if _, ok := l.Tilesets[ts.Class]; !ok {
-			l.Tilesets[ts.Class] = ts
-		}
-	}
-
 	return nextLevel
 }
 
-func (l *levelLoader) MustLoadBox(o *tiled.Object) Path {
+func (l *LevelLoader) MustLoadBox(o *tiled.Object) Path {
 	y := o.Y - 32
 	points := []math.Vec2{
 		{X: o.X, Y: y},
@@ -318,46 +319,6 @@ func (l *levelLoader) MustLoadBox(o *tiled.Object) Path {
 		Loops:  true,
 	}
 
-}
-
-func (l *levelLoader) MustFindTile(tilesetClass string, tileClass string) *ebiten.Image {
-	ts, ok := l.Tilesets[tilesetClass]
-	if !ok {
-		panic(fmt.Sprintf("tileset not found: %s", tilesetClass))
-	}
-
-	for _, t := range ts.Tiles {
-		f, err := fs.ReadFile(assetsFS, filepath.Join("levels", ts.Image.Source))
-		if err != nil {
-			panic(err)
-		}
-
-		tilesetImage := mustNewEbitenImage(f)
-		if t.Class == tileClass {
-			width := ts.TileWidth
-			height := ts.TileHeight
-
-			col := int(t.ID) % ts.Columns
-			row := int(t.ID) / ts.Columns
-
-			// Plus one because of 1px margin
-			if col > 0 {
-				width += 1
-			}
-			if row > 0 {
-				height += 1
-			}
-
-			sx := col * width
-			sy := row * height
-
-			return tilesetImage.SubImage(
-				image.Rect(sx, sy, sx+ts.TileWidth, sy+ts.TileHeight),
-			).(*ebiten.Image)
-		}
-	}
-
-	panic(fmt.Sprintf("tile not found: %s", tileClass))
 }
 
 func MustLoadImageFromFS(filePath string) *ebiten.Image {

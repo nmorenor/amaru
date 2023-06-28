@@ -42,7 +42,6 @@ type ConnectingMenu struct {
 	remoteClient *net.RemoteClient
 
 	wateLocations map[string]*net.WasteLocation
-	levelIndex    int
 }
 
 func NewConnectingMenuMenu(screenWidth int, screenHeight int, session *component.SessionData) *ConnectingMenu {
@@ -58,12 +57,12 @@ func NewConnectingMenuMenu(screenWidth int, screenHeight int, session *component
 }
 
 func (menu *ConnectingMenu) loadMenu(session *component.SessionData) {
-	selectedLevelIndex := engine.RandomIntRange(0, len(assets.AvailableLevels))
-	menu.levelIndex = selectedLevelIndex
-	render := system.NewRenderer(selectedLevelIndex)
+	selectedLevelIndex := engine.RandomIntRange(0, assets.GameLevelLoader.LevelsSize)
+	assets.GameLevelLoader.LoadLevel(selectedLevelIndex)
+	render := system.NewRenderer()
 
 	menu.systems = []System{
-		system.NewCamera(selectedLevelIndex),
+		system.NewCamera(),
 		render,
 	}
 
@@ -114,7 +113,7 @@ func (menu *ConnectingMenu) createWorld(levelIndex int, session *component.Sessi
 
 	component.Camera.Get(cameraEntry).Disabled = true
 
-	selectedLevel := assets.AvailableLevels[levelIndex]
+	selectedLevel := assets.GameLevelLoader.CurrentLevel
 
 	space, shapes := archetype.SetupSpaceForLevel(selectedLevel)
 
@@ -216,7 +215,7 @@ func (menu *ConnectingMenu) StartSession() {
 	menu.game.Session.RemoteClient.GameData.Counter = 30
 	menu.game.Session.RemoteClient.GameData.Frames = 0
 	if menu.game.Session.Type == component.SessionTypeHost {
-		menu.game.Session.RemoteClient.GameData.LevelIndex = menu.levelIndex
+		menu.game.Session.RemoteClient.GameData.LevelIndex = assets.GameLevelLoader.CurrentLevelIndex
 		menu.game.Session.RemoteClient.GameData.WasteLocations = menu.wateLocations
 	}
 	menu.remoteClient.SessionJoin.AddListener(func(ctx context.Context, sjm net.SessionJoinMessage) {
@@ -256,7 +255,7 @@ func (menu *ConnectingMenu) NextScene() archetype.Scene {
 		menu.world = nil
 		menu.systems = nil
 		menu.drawables = nil
-		return NewGame(menu.game.Settings.ScreenWidth, menu.game.Settings.ScreenHeight, menu.game.Session, nil)
+		return NewGame(menu.game.Settings.ScreenWidth, menu.game.Settings.ScreenHeight, menu.game)
 	}
 	if menu.remoteClient.InvalidSession {
 		CleanWorld(menu.world)

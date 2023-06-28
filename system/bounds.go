@@ -13,14 +13,12 @@ import (
 )
 
 type Bounds struct {
-	levelIndex int
-	query      *query.Query
-	game       *component.GameData
+	query *query.Query
+	game  *component.GameData
 }
 
-func NewBounds(selectedLevelIndex int) *Bounds {
+func NewBounds() *Bounds {
 	return &Bounds{
-		levelIndex: selectedLevelIndex,
 		query: query.NewQuery(filter.Contains(
 			transform.Transform,
 			component.Sprite,
@@ -55,7 +53,7 @@ func (b *Bounds) Update(w donburi.World) {
 		width, height := float64(w), float64(h)
 
 		var minX, maxX, minY, maxY float64
-		level := assets.AvailableLevels[b.levelIndex]
+		level := assets.GameLevelLoader.CurrentLevel
 		levelWidth := level.Background.Bounds().Dx()
 		levelHeight := level.Background.Bounds().Dy()
 

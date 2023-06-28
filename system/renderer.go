@@ -27,8 +27,8 @@ type Render struct {
 	debug      *component.DebugData
 }
 
-func NewRenderer(selectedLevelIndex int) *Render {
-	level := assets.AvailableLevels[selectedLevelIndex]
+func NewRenderer() *Render {
+	level := assets.GameLevelLoader.CurrentLevel
 	return &Render{
 		query: query.NewQuery(
 			filter.Contains(transform.Transform, component.Sprite),

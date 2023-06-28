@@ -28,13 +28,14 @@ type Debug struct {
 	game           *component.GameData
 }
 
-func NewDebug(levelIndex int) *Debug {
+func NewDebug() *Debug {
+	level := assets.GameLevelLoader.CurrentLevel
 	return &Debug{
 		query: query.NewQuery(
 			filter.Contains(transform.Transform, component.Sprite),
 		),
-		offscreen:      ebiten.NewImage(assets.AvailableLevels[levelIndex].Background.Bounds().Dx(), assets.AvailableLevels[levelIndex].Background.Bounds().Dy()),
-		offscreenBoxes: ebiten.NewImage(assets.AvailableLevels[levelIndex].Background.Bounds().Dx(), assets.AvailableLevels[levelIndex].Background.Bounds().Dy()),
+		offscreen:      ebiten.NewImage(level.Background.Bounds().Dx(), level.Background.Bounds().Dy()),
+		offscreenBoxes: ebiten.NewImage(level.Background.Bounds().Dx(), level.Background.Bounds().Dy()),
 	}
 }
 

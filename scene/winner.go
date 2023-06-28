@@ -65,16 +65,17 @@ func NewWinnerMenu(gameData *component.GameData) *WinnerMenu {
 
 func (menu *WinnerMenu) loadMenu(gameData *component.GameData) {
 	lastIndex := gameData.Session.RemoteClient.GameData.LevelIndex
-	selectedLevelIndex := engine.RandomIntRange(0, len(assets.AvailableLevels))
+	selectedLevelIndex := engine.RandomIntRange(0, assets.GameLevelLoader.LevelsSize)
 	for selectedLevelIndex == lastIndex {
-		selectedLevelIndex = engine.RandomIntRange(0, len(assets.AvailableLevels))
+		selectedLevelIndex = engine.RandomIntRange(0, assets.GameLevelLoader.LevelsSize)
 	}
+	assets.GameLevelLoader.LoadLevel(selectedLevelIndex)
 	gameData.Session.RemoteClient.GameData.LevelIndex = selectedLevelIndex
-	render := system.NewRenderer(gameData.Session.RemoteClient.GameData.LevelIndex)
+	render := system.NewRenderer()
 	uiRender := system.NewUIRenderer()
 
 	menu.systems = []System{
-		system.NewCamera(gameData.Session.RemoteClient.GameData.LevelIndex),
+		system.NewCamera(),
 		render,
 		uiRender,
 	}
@@ -115,7 +116,7 @@ func (menu *WinnerMenu) createWorld(gameData *component.GameData) donburi.World 
 		Y: 0,
 	})
 
-	selectedLevel := assets.AvailableLevels[gameData.Session.RemoteClient.GameData.LevelIndex]
+	selectedLevel := assets.GameLevelLoader.CurrentLevel
 	space, shapes := archetype.SetupSpaceForLevel(selectedLevel)
 
 	component.Camera.Get(cameraEntry).Disabled = true
@@ -246,7 +247,7 @@ func (menu *WinnerMenu) NextScene() archetype.Scene {
 			go menu.game.Session.RemoteClient.SendGameDataMessage(*menu.game.Session.RemoteClient.GameData)
 		}
 		menu.game.Session.JustJoined = false
-		return NewGame(menu.game.Settings.ScreenWidth, menu.game.Settings.ScreenHeight, menu.game.Session, menu.game)
+		return NewGame(menu.game.Settings.ScreenWidth, menu.game.Settings.ScreenHeight, menu.game)
 	}
 	if menu.game.Session.End {
 		CleanWorld(menu.world)

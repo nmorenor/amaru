@@ -49,12 +49,13 @@ func NewStartMenu(screenWidth int, screenHeight int) *StartMenu {
 }
 
 func (menu *StartMenu) loadMenu() {
-	selectedLevelIndex := engine.RandomIntRange(0, len(assets.AvailableLevels)-1)
-	render := system.NewRenderer(selectedLevelIndex)
+	selectedLevelIndex := engine.RandomIntRange(0, assets.GameLevelLoader.LevelsSize)
+	assets.GameLevelLoader.LoadLevel(selectedLevelIndex)
+	render := system.NewRenderer()
 	uiRender := system.NewUIRenderer()
 
 	menu.systems = []System{
-		system.NewCamera(selectedLevelIndex),
+		system.NewCamera(),
 		render,
 		uiRender,
 	}
@@ -91,7 +92,7 @@ func (menu *StartMenu) createWorld(selectedLevelIndex int) donburi.World {
 		Y: 0,
 	})
 
-	selectedLevel := assets.AvailableLevels[selectedLevelIndex]
+	selectedLevel := assets.GameLevelLoader.CurrentLevel
 
 	component.Camera.Get(cameraEntry).Disabled = true
 
@@ -142,6 +143,7 @@ func (menu *StartMenu) createWorld(selectedLevelIndex int) donburi.World {
 		})
 	}
 
+	archetype.StopAudioGame()
 	archetype.PlayAudioMenu()
 
 	return world

@@ -228,7 +228,7 @@ func CreateBoxFromPath(space *cp.Space, path assets.Path, collisionType cp.Colli
 	return shape
 }
 
-func SetupSpaceForLevel(level assets.Level) (*cp.Space, []*cp.Shape) {
+func SetupSpaceForLevel(level *assets.Level) (*cp.Space, []*cp.Shape) {
 	space := cp.NewSpace()
 	space.SetGravity(cp.Vector{X: 0, Y: 0})
 	shapes := []*cp.Shape{}

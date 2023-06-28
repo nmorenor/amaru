@@ -29,12 +29,11 @@ type Drawable interface {
 }
 
 type Game struct {
-	sessionData *component.SessionData
-	gameData    *component.GameData
-	world       donburi.World
-	systems     []System
-	drawables   []Drawable
-	space       *cp.Space
+	gameData  *component.GameData
+	world     donburi.World
+	systems   []System
+	drawables []Drawable
+	space     *cp.Space
 
 	shapes []*cp.Shape
 
@@ -42,12 +41,11 @@ type Game struct {
 	screenHeight int
 }
 
-func NewGame(screenWidth int, screenHeight int, session *component.SessionData, gameData *component.GameData) *Game {
+func NewGame(screenWidth int, screenHeight int, gameData *component.GameData) *Game {
 	g := &Game{
 		screenWidth:  screenWidth,
 		screenHeight: screenHeight,
 		shapes:       make([]*cp.Shape, 0),
-		sessionData:  session,
 		gameData:     gameData,
 	}
 	assets.MustLoadSvgs()
@@ -55,7 +53,7 @@ func NewGame(screenWidth int, screenHeight int, session *component.SessionData, 
 	space := cp.NewSpace()
 	space.SetGravity(cp.Vector{X: 0, Y: 0})
 
-	level := assets.AvailableLevels[session.RemoteClient.GameData.LevelIndex]
+	level := assets.GameLevelLoader.LoadLevel(gameData.Session.RemoteClient.GameData.LevelIndex)
 	space, shapes := archetype.SetupSpaceForLevel(level)
 	g.space = space
 	g.shapes = shapes
@@ -96,17 +94,17 @@ func (g *Game) NextScene() archetype.Scene {
 }
 
 func (g *Game) loadLevel() {
-	render := system.NewRenderer(g.sessionData.RemoteClient.GameData.LevelIndex)
-	debug := system.NewDebug(g.sessionData.RemoteClient.GameData.LevelIndex)
+	render := system.NewRenderer()
+	debug := system.NewDebug()
 	remote := system.NewRemoteSystem()
 	hud := system.NewHUD()
 
 	g.systems = []System{
-		system.NewCamera(g.sessionData.RemoteClient.GameData.LevelIndex),
+		system.NewCamera(),
 		system.NewCameraBounds(),
 		system.NewAnimation(),
 		remote,
-		system.NewBounds(g.sessionData.RemoteClient.GameData.LevelIndex),
+		system.NewBounds(),
 		system.NewPlayer(g.space),
 		system.NewControls(),
 		hud,
@@ -120,7 +118,7 @@ func (g *Game) loadLevel() {
 		hud,
 	}
 
-	g.world = g.createWorld(g.sessionData.RemoteClient.GameData.LevelIndex)
+	g.world = g.createWorld()
 	remote.Initialize(g.gameData, g.world)
 	if g.gameData.Session.Type == component.SessionTypeJoin {
 		go g.gameData.Session.RemoteClient.RequestGameData()
@@ -131,8 +129,8 @@ func (g *Game) UpdateLayout(width, height int) {
 	// do nothing
 }
 
-func (g *Game) createWorld(levelIndex int) donburi.World {
-	levelAsset := assets.AvailableLevels[levelIndex]
+func (g *Game) createWorld() donburi.World {
+	levelAsset := assets.GameLevelLoader.CurrentLevel
 
 	world := donburi.NewWorld()
 
@@ -164,29 +162,20 @@ func (g *Game) createWorld(levelIndex int) donburi.World {
 		Pivot: component.SpritePivotTopLeft,
 	})
 
-	if g.gameData == nil {
-		game := world.Entry(world.Create(component.Game))
-		component.Game.SetValue(game, component.GameData{
-			Settings: component.Settings{
-				ScreenWidth:  g.screenWidth,
-				ScreenHeight: g.screenHeight,
-			},
-			Speed:        3.0,
-			LeftOffset:   100,
-			Session:      g.sessionData,
-			ChatMessages: engine.NewQueue[net.ChatMessage](),
-			WasteSize:    len(g.sessionData.RemoteClient.GameData.WasteLocations),
-		})
-	} else {
-		g.gameData.GameOver = false
-		g.gameData.WasteSize = len(g.sessionData.RemoteClient.GameData.WasteLocations)
-		game := world.Entry(world.Create(component.Game))
-		component.Game.SetValue(game, *g.gameData)
-	}
-	game := component.MustFindGame(world)
+	g.gameData.GameOver = false
+	g.gameData.WasteSize = len(g.gameData.Session.RemoteClient.GameData.WasteLocations)
+	game := world.Entry(world.Create(component.Game))
+	component.Game.SetValue(game, *g.gameData)
+
+	g.gameData.GameOver = false
+	g.gameData.WasteSize = len(g.gameData.Session.RemoteClient.GameData.WasteLocations)
+	gameEntry := world.Entry(world.Create(component.Game))
+	component.Game.SetValue(gameEntry, *g.gameData)
+
+	g.gameData = component.MustFindGame(world)
 	if engine.IsMobileBrowser() {
-		game.Dpad = engine.Ptr(vpad.NewDirectionalPad(assets.DirectionalPad, assets.DirectionalBtn, engine.ConvertToRGBA(assets.BlueColor)))
-		game.Dpad.SetLocation(game.Settings.ScreenWidth-230, game.Settings.ScreenHeight-230)
+		g.gameData.Dpad = engine.Ptr(vpad.NewDirectionalPad(assets.DirectionalPad, assets.DirectionalBtn, engine.ConvertToRGBA(assets.BlueColor)))
+		g.gameData.Dpad.SetLocation(g.gameData.Settings.ScreenWidth-230, g.gameData.Settings.ScreenHeight-230)
 	}
 
 	debugEntity := world.Create(component.Debug)
@@ -195,36 +184,35 @@ func (g *Game) createWorld(levelIndex int) donburi.World {
 
 	pPos := engine.RandomIntRange(0, len(levelAsset.PlayersStart))
 	startPos := levelAsset.PlayersStart[pPos].TetraCenter()
-	archetype.NewPlayer(world, g.space, startPos, component.DefaultPlayerAnimation, *game.Session.UserName, *game.Session.RemoteClient.Client.Id, true)
-	if game.Session.RemoteClient.GameData.SessionParticipants[*game.Session.RemoteClient.Client.Id] == nil {
-		game.Session.RemoteClient.GameData.SessionParticipants[*game.Session.RemoteClient.Client.Id] = &net.SessionParticipant{
-			Id:        *game.Session.RemoteClient.Client.Id,
-			Name:      game.Session.UserName,
+	archetype.NewPlayer(world, g.space, startPos, component.DefaultPlayerAnimation, *g.gameData.Session.UserName, *g.gameData.Session.RemoteClient.Client.Id, true)
+	if g.gameData.Session.RemoteClient.GameData.SessionParticipants[*g.gameData.Session.RemoteClient.Client.Id] == nil {
+		g.gameData.Session.RemoteClient.GameData.SessionParticipants[*g.gameData.Session.RemoteClient.Client.Id] = &net.SessionParticipant{
+			Id:        *g.gameData.Session.RemoteClient.Client.Id,
+			Name:      g.gameData.Session.UserName,
 			Position:  &net.Point{X: startPos.X, Y: startPos.Y},
 			Anim:      engine.Ptr(component.DefaultPlayerAnimation),
 			HasPlayer: false,
 		}
 	}
 	go func() {
-		game.Session.RemoteClient.SendInitialPositionDataMessage(net.Point{X: startPos.X, Y: startPos.Y})
+		g.gameData.Session.RemoteClient.SendInitialPositionDataMessage(net.Point{X: startPos.X, Y: startPos.Y})
 	}()
 	physics := world.Entry(world.Create(component.Physics))
 	component.Physics.Get(physics).Space = g.space
 
 	archetype.PlaceAnimalComponents(world, g.space, debugComponent, levelAsset.Animals, float64(levelAsset.Background.Bounds().Dx()), float64(levelAsset.Background.Bounds().Dy()))
-	if game.Session.Type == component.SessionTypeHost {
-		for _, loc := range g.sessionData.RemoteClient.GameData.WasteLocations {
+	if g.gameData.Session.Type == component.SessionTypeHost {
+		for _, loc := range g.gameData.Session.RemoteClient.GameData.WasteLocations {
 			archetype.PlaceRemoteWasteFromPath(world, g.space, debugComponent, loc.Id, loc.Location, loc.Collected)
 		}
 	}
 
-	g.gameData = game
-	if game.Session.Type == component.SessionTypeHost {
-		game.Session.RemoteClient.GameData.OnGameState = true
+	if g.gameData.Session.Type == component.SessionTypeHost {
+		g.gameData.Session.RemoteClient.GameData.OnGameState = true
 	}
 
 	archetype.SetupColliders(world)
-	if !game.Muted {
+	if !g.gameData.Muted {
 		archetype.StopAudioMenu()
 		archetype.StopWinnerAudio()
 		archetype.PlayAudioGame()

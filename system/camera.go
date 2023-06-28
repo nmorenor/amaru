@@ -11,14 +11,11 @@ import (
 )
 
 type Camera struct {
-	levelIndex int
-	game       *component.GameData
+	game *component.GameData
 }
 
-func NewCamera(selectedLevelIndex int) *Camera {
-	return &Camera{
-		levelIndex: selectedLevelIndex,
-	}
+func NewCamera() *Camera {
+	return &Camera{}
 }
 
 func (c *Camera) Update(w donburi.World) {
@@ -34,7 +31,7 @@ func (c *Camera) Update(w donburi.World) {
 	if component.Camera.Get(camera).Disabled {
 		return
 	}
-	level := assets.AvailableLevels[c.levelIndex]
+	level := assets.GameLevelLoader.CurrentLevel
 	width := level.Background.Bounds().Dx()
 	height := level.Background.Bounds().Dy()
 	_, player := archetype.MustFindLocalPlayer(w)

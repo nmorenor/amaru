@@ -44,12 +44,13 @@ func NewAboutMenu(screenWidth int, screenHeight int) *AboutMenu {
 }
 
 func (menu *AboutMenu) loadMenu() {
-	selectedLevelIndex := engine.RandomIntRange(0, len(assets.AvailableLevels)-1)
-	render := system.NewRenderer(selectedLevelIndex)
+	selectedLevelIndex := engine.RandomIntRange(0, assets.GameLevelLoader.LevelsSize)
+	assets.GameLevelLoader.LoadLevel(selectedLevelIndex)
+	render := system.NewRenderer()
 	uiRender := system.NewUIRenderer()
 
 	menu.systems = []System{
-		system.NewCamera(selectedLevelIndex),
+		system.NewCamera(),
 		render,
 		uiRender,
 	}
@@ -59,7 +60,7 @@ func (menu *AboutMenu) loadMenu() {
 		uiRender,
 	}
 
-	menu.world = engine.Ptr(menu.createWorld(selectedLevelIndex))
+	menu.world = engine.Ptr(menu.createWorld())
 	menu.game = component.MustFindGame(*menu.world)
 	menu.game.Session = nil // reset session
 	uiRender.Initialize(*menu.world)
@@ -69,7 +70,7 @@ func (menu *AboutMenu) UpdateLayout(width, height int) {
 	// do nothing
 }
 
-func (menu *AboutMenu) createWorld(selectedLevelIndex int) donburi.World {
+func (menu *AboutMenu) createWorld() donburi.World {
 	rectX := float64(menu.screenWidth/2) - (float64(menu.screenWidth/2) / 2)
 	rectY := float64(menu.screenHeight/2) - (float64(menu.screenHeight/2) / 2)
 
@@ -86,7 +87,7 @@ func (menu *AboutMenu) createWorld(selectedLevelIndex int) donburi.World {
 		Y: 0,
 	})
 
-	selectedLevel := assets.AvailableLevels[selectedLevelIndex]
+	selectedLevel := assets.GameLevelLoader.CurrentLevel
 
 	component.Camera.Get(cameraEntry).Disabled = true
 
