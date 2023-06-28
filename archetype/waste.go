@@ -13,6 +13,15 @@ import (
 	"github.com/yohamta/donburi/features/transform"
 )
 
+var (
+	WasteAnimationAction = &component.Animation{
+		Name:   "default",
+		Frames: []int{0, 1, 2, 3, 4, 5},
+	}
+
+	WasteActions = []*component.Animation{WasteAnimationAction}
+)
+
 func PlaceWasteComponents(world donburi.World, space *cp.Space, numWaste int, debug *component.DebugData, shapeList []cp.BB, mapWidth float64, mapHeight float64) []*component.WasteData {
 	wasteList := []*component.WasteData{}
 	for i := 0; i < numWaste; i++ {
@@ -82,6 +91,7 @@ func placeWasteFromPath(world donburi.World, space *cp.Space, debug *component.D
 		waste := world.Entry(
 			world.Create(
 				component.Sprite,
+				component.AnimationComponent,
 				transform.Transform,
 				component.Waste,
 			),
@@ -93,7 +103,14 @@ func placeWasteFromPath(world donburi.World, space *cp.Space, debug *component.D
 		spriteData := component.SpriteData{}
 		spriteData.Layer = component.SpriteLayerDefault
 		spriteData.Pivot = component.SpritePivotTopLeft
-		spriteData.Image = assets.WasteImage
+
+		animationEntry := NewAnimationComponent(world, waste, waste, assets.WasteSpriteSheet.Drawables(), 0.3)
+		animationData := component.AnimationComponent.Get(animationEntry)
+		animationData.AddAnimations(WasteActions)
+		animationData.SelectAnimationByName("default")
+		animationData.CurrentAnimation.Loop = true
+
+		spriteData.Image = animationData.Cell()
 		component.Sprite.SetValue(waste, spriteData)
 		transform.Transform.Get(waste).LocalPosition = math.Vec2{X: x, Y: y}
 	}

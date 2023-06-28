@@ -133,7 +133,7 @@ func SetupColliders(world donburi.World) {
 
 		if player.Local {
 			if !game.Muted {
-				PlayHeronAudio()
+				PlayShipAudio()
 			}
 		}
 
