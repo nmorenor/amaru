@@ -12,9 +12,10 @@ import (
 )
 
 const (
-	ConnectionURL        = "nmorenor.com:1305"
-	AvailableSessionsURL = "https://nmorenor.com/hub-sessions"
-	KCPKey               = "demo"
+	ConnectionURL          = "nmorenor.com:1305"
+	WebSocketConnectionURL = "wss://nmorenor.com/ws"
+	AvailableSessionsURL   = "https://nmorenor.com/hub-sessions"
+	KCPKey                 = "demo"
 )
 
 func NewRemoteClient(currentClient *client.Client, userName string, hostMode bool) *RemoteClient {

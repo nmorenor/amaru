@@ -8,6 +8,7 @@ import (
 	"amaru/net"
 	"amaru/system"
 	"context"
+	"runtime"
 	"time"
 
 	"github.com/jakecoffman/cp"
@@ -206,7 +207,13 @@ func (menu *ConnectingMenu) createWorld(levelIndex int, session *component.Sessi
 }
 
 func (menu *ConnectingMenu) StartSession() {
-	menu.remoteClient = net.NewRemoteClient(client.NewClient(cnet.NewKCPSocket(net.ConnectionURL, net.KCPKey)), *menu.game.Session.UserName, menu.game.Session.Type == component.SessionTypeHost)
+	var socket *cnet.ISocket
+	if runtime.GOOS == "js" {
+		socket = engine.Ptr(cnet.NewWebSocket(net.WebSocketConnectionURL))
+	} else {
+		socket = engine.Ptr(cnet.NewKCPSocket(net.ConnectionURL, net.KCPKey))
+	}
+	menu.remoteClient = net.NewRemoteClient(client.NewClient(*socket), *menu.game.Session.UserName, menu.game.Session.Type == component.SessionTypeHost)
 	if menu.game.Session.SessionID != nil {
 		menu.remoteClient.Session = menu.game.Session.SessionID
 		menu.remoteClient.Client.Session = menu.game.Session.SessionID
