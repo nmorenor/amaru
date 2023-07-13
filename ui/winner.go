@@ -223,7 +223,7 @@ func (s *WinnerUI) Container() *widget.Container {
 
 func (s *WinnerUI) Update() {
 	if s.MessageDone {
-		s.Game.Session.RemoteClient.SendChatMessage(*s.MessageValue)
+		go s.Game.Session.RemoteClient.SendChatMessage(*s.MessageValue)
 		s.Reset()
 	}
 

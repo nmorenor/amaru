@@ -11,7 +11,7 @@ require (
 	github.com/lafriks/go-tiled v0.12.0
 	github.com/lucasb-eyer/go-colorful v1.2.0
 	github.com/maniartech/signals v1.1.0
-	github.com/nmorenor/chezmoi-net v0.0.0-20230621184349-11f8380c7cbc
+	github.com/nmorenor/chezmoi-net v1.0.0
 	github.com/pkg/browser v0.0.0-20230426125349-380d8d3137eb
 	github.com/samber/lo v1.38.1
 	github.com/srwiley/oksvg v0.0.0-20221011165216-be6e8873101c
@@ -33,18 +33,27 @@ require (
 	github.com/jfreymuth/oggvorbis v1.0.5 // indirect
 	github.com/jfreymuth/vorbis v1.0.2 // indirect
 	github.com/klauspost/compress v1.10.3 // indirect
+	github.com/klauspost/cpuid/v2 v2.1.1 // indirect
+	github.com/klauspost/reedsolomon v1.11.8 // indirect
 	github.com/mborders/artifex v0.4.0 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/sacOO7/go-logger v0.0.0-20180719173527-9ac9add5a50d // indirect
+	github.com/templexxx/cpu v0.0.9 // indirect
+	github.com/templexxx/xorsimd v0.4.1 // indirect
+	github.com/tjfoc/gmsm v1.4.1 // indirect
+	github.com/xtaci/kcp-go/v5 v5.6.2 // indirect
+	golang.org/x/crypto v0.11.0 // indirect
 	golang.org/x/exp v0.0.0-20220303212507-bbda1eaf7a17 // indirect
 	golang.org/x/exp/shiny v0.0.0-20230522175609-2e198f4a06a1 // indirect
 	golang.org/x/mobile v0.0.0-20230427221453-e8d11dd0ba41 // indirect
-	golang.org/x/net v0.6.0 // indirect
+	golang.org/x/net v0.12.0 // indirect
 	golang.org/x/sync v0.2.0 // indirect
-	golang.org/x/sys v0.8.0 // indirect
-	golang.org/x/text v0.9.0 // indirect
+	golang.org/x/sys v0.10.0 // indirect
+	golang.org/x/text v0.11.0 // indirect
 	nhooyr.io/websocket v1.8.7 // indirect
 )
 
 replace github.com/ebitenui/ebitenui => github.com/nmorenor/ebitenui v0.0.0-20230623185334-6870b4d02b03
+
 replace github.com/pkg/browser => github.com/joelschutz/browser v0.0.0-20230426125349-380d8d3137eb

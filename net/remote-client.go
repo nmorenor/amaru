@@ -12,8 +12,9 @@ import (
 )
 
 const (
-	ConnectionURL        = "wss://nmorenor.com/ws"
+	ConnectionURL        = "nmorenor.com:1305"
 	AvailableSessionsURL = "https://nmorenor.com/hub-sessions"
+	KCPKey               = "demo"
 )
 
 func NewRemoteClient(currentClient *client.Client, userName string, hostMode bool) *RemoteClient {
